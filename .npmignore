@@ -1,0 +1,8 @@
+# Source (consumers get dist-lib/)
+src/
+*.test.tsx
+vitest.config.ts
+tsconfig.json
+tsconfig.lib.json
+vite.config.lib.ts
+.github/
