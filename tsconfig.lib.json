@@ -16,5 +16,5 @@
     "isolatedModules": true
   },
   "include": ["src/nhs-viz/**/*"],
-  "exclude": ["node_modules", "dist", "dist-lib"]
+  "exclude": ["node_modules", "dist", "dist-lib", "src/**/*.test.tsx", "src/**/*.test.ts"]
 }
