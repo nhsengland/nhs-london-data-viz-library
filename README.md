@@ -1,5 +1,6 @@
 # NHS London Data Visualization Component Library
 
+[![Build](https://github.com/nhsengland/nhs-london-data-viz-library/actions/workflows/publish.yml/badge.svg)](https://github.com/nhsengland/nhs-london-data-viz-library/actions/workflows/publish.yml)
 [![npm version](https://img.shields.io/npm/v/nhs-london-data-viz-library.svg)](https://www.npmjs.com/package/nhs-london-data-viz-library)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
