@@ -35,7 +35,14 @@ npm install react react-dom recharts nhsuk-frontend
 ## 🚀 Quick Start
 
 ```tsx
-import { NHSBarChart, NHSKPICard, nhsColors } from "nhs-london-data-viz-library";
+import {
+  NHSBarChart,
+  NHSKPICard,
+  NHSSPCChart,
+  NHSHeader,
+  NHSFilters,
+  nhsColors,
+} from "nhs-london-data-viz-library";
 
 // Required: NHS Design System base styles
 import "nhsuk-frontend/dist/nhsuk/nhsuk-frontend.css";
@@ -44,31 +51,47 @@ import "nhsuk-frontend/dist/nhsuk/nhsuk-frontend.css";
 import "nhs-london-data-viz-library/sub-navigation.css";
 
 function App() {
-  const data = [
-    { region: "North West London", attendances: 42000 },
-    { region: "North Central London", attendances: 38500 },
-    { region: "South East London", attendances: 35200 },
-    { region: "South West London", attendances: 31800 },
-    { region: "North East London", attendances: 29400 },
-  ];
-
   return (
     <div>
+      <NHSHeader
+        title="My Dashboard"
+        dataFreshness={{ lastRefreshed: "1 May 2026", latestDataAvailable: "March 2026" }}
+      />
+
       <NHSKPICard
-        title="Total A&E Attendances"
-        value="176.9K"
+        title="A&E Attendances"
+        value="2.31M"
         trend="up"
-        trendValue="+4.1%"
-        trendLabel="vs previous quarter"
+        trendValue="+3.2%"
+        trendLabel="vs last month"
         color={nhsColors.nhsBlue}
       />
 
       <NHSBarChart
-        data={data}
-        xKey="region"
-        yKeys={["attendances"]}
-        title="A&E Attendances by Sub-Region (Q4 2025/26)"
-        layout="horizontal"
+        data={[
+          { name: "London", value: 420 },
+          { name: "South East", value: 380 },
+          { name: "East", value: 310 },
+        ]}
+        xKey="name"
+        yKeys={["value"]}
+        title="Admissions by Region"
+      />
+
+      <NHSSPCChart
+        data={[
+          { label: "Jan", value: 74.2 },
+          { label: "Feb", value: 73.8 },
+          { label: "Mar", value: 75.1 },
+          // ... more data points
+        ]}
+        chartType="xmr"
+        title="A&E 4-Hour Performance"
+        improvementDirection="up"
+        target={95}
+        targetLabel="95% national target"
+        showViolations
+        showVariationIcon
       />
     </div>
   );
@@ -86,24 +109,46 @@ function App() {
 | `NHSComboChart` | Dual measures — combined bar + line with dual Y-axis |
 | `NHSPieChart` | Proportions — pie and donut with labels |
 | `NHSScatterChart` | Correlations — scatter plots and bubble charts |
+| `NHSSPCChart` | Process control — XmR, P-chart, C-chart, U-chart, Run chart |
 | `NHSHeatmap` | Patterns — matrix heatmaps with sequential colour scales |
 | `NHSTreemap` | Hierarchies — area-based proportional visualization |
 | `NHSGanttChart` | Timelines — horizontal bars with progress indicators |
 | `NHSSparkline` | At-a-glance — inline mini-charts for tables and cards |
 
-### Dashboard Components
+### SPC Chart Features
+
+The `NHSSPCChart` follows NHS England "Making Data Count" methodology:
+
+- **Auto-calculated control limits** (UCL/LCL) and mean from your data
+- **Rule violation detection**: beyond limits, shifts (7+), trends (7+), 2-of-3
+- **NHS improvement icons**: 🟢 improving, 🔴 deteriorating, ⚪ common cause
+- **Chart types**: XmR (individuals), P-chart, C-chart, U-chart, Run chart
+- **Optional target line** with label
+- **Control limit shading** between UCL and LCL
+- **Recalculated limits** support for process changes
+- **Tooltip** showing point details and which rule was violated
+
+### Dashboard & Data
 
 | Component | Use Case |
 |-----------|----------|
 | `NHSKPICard` | Key metrics — scorecard tiles with trend arrows |
 | `NHSTable` | Data exploration — sortable, filterable, paginated, conditional formatting |
+| `NHSFilters` | Filter panel — select, multi-select, radio, search, date, date-range |
 | `ChartContainer` | Layout — wrapper with title, subtitle, download button |
+
+### Layout & Navigation
+
+| Component | Use Case |
+|-----------|----------|
+| `NHSHeader` | App header — hamburger toggle, NHS logo, title, data freshness bar |
+| `NHSSideNav` | Side navigation — collapsible panel with grouped items and backdrop |
+| `SubNavigation` | Tabs — horizontal tab bar for switching between in-page views |
 
 ### UI Components
 
 | Component | Use Case |
 |-----------|----------|
-| `SubNavigation` | Navigation — NHS-styled horizontal tab bar |
 | `NHSLogo` | Branding — SVG logo (blue/white variants, any size) |
 | `NHSLoadingSpinner` | States — loading indicator |
 | `NHSErrorCard` | States — error display when data fails to load |
@@ -117,8 +162,21 @@ All prop interfaces are exported for consumers building wrapper components:
 import type {
   NHSBarChartProps,
   NHSKPICardProps,
+  NHSSPCChartProps,
+  SPCDataPoint,
+  SPCChartType,
+  SPCVariation,
+  SPCLimitOverride,
+  NHSHeaderProps,
+  DataFreshnessConfig,
+  NHSSideNavProps,
+  NavItem,
+  NHSFiltersProps,
+  FilterField,
+  FilterOption,
   NHSTableProps,
   ColumnDef,
+  ConditionalFormatRule,
   SeriesConfig,
   GanttTask,
 } from "nhs-london-data-viz-library";
@@ -220,12 +278,14 @@ src/nhs-viz/
 ├── bar-chart/
 │   ├── NHSBarChart.tsx
 │   └── NHSBarChart.test.tsx
-├── kpi-card/
-│   ├── NHSKPICard.tsx
-│   └── NHSKPICard.test.tsx
-├── table/
-│   ├── NHSTable.tsx
-│   └── NHSTable.test.tsx
+├── spc-chart/
+│   └── NHSSPCChart.tsx
+├── header/
+│   └── NHSHeader.tsx
+├── side-nav/
+│   └── NHSSideNav.tsx
+├── filters/
+│   └── NHSFilters.tsx
 ├── sub-navigation/
 │   ├── SubNavigation.tsx
 │   ├── SubNavigation.test.tsx
@@ -237,7 +297,7 @@ src/nhs-viz/
 
 1. Update components and ensure tests pass
 2. Push changes to `main`
-3. Create a GitHub Release with a semantic version tag (e.g., `1.1.0`)
+3. Create a GitHub Release with a semantic version tag (e.g., `1.3.0`)
 4. GitHub Actions automatically builds, tests, and publishes to npmjs.com
 
 ## 📁 What's Published to npm
@@ -252,6 +312,10 @@ nhs-london-data-viz-library/
 │       ├── index.d.ts
 │       ├── theme.d.ts
 │       ├── bar-chart/
+│       ├── spc-chart/
+│       ├── header/
+│       ├── side-nav/
+│       ├── filters/
 │       ├── kpi-card/
 │       ├── table/
 │       └── ... (all component types)
@@ -270,6 +334,7 @@ Built following the [NHS England Data Viz Community of Practice](https://nhsengl
 - ✅ Categorical palette ordered for colour-blind distinction
 - ✅ Sequential and diverging palettes for continuous data
 - ✅ Arial font (NHS Design System standard)
+- ✅ SPC methodology following NHS "Making Data Count"
 - ✅ Responsive — all components adapt to container width
 - ✅ Accessible — ARIA labels, keyboard navigation, screen reader support
 - ✅ Pure ESM — no CommonJS, works in all modern bundlers
