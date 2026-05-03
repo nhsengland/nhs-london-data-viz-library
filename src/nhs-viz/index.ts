@@ -1,3 +1,9 @@
+// Layout & Navigation Components
+export { NHSHeader } from "./header/NHSHeader";
+export { NHSSideNav } from "./side-nav/NHSSideNav";
+export { NHSFilters } from "./filters/NHSFilters";
+export { NHSSPCChart } from "./spc-chart/NHSSPCChart";
+
 // Components
 export { ChartContainer } from "./chart-container/ChartContainer";
 export { NHSBarChart } from "./bar-chart/NHSBarChart";
@@ -18,6 +24,10 @@ export { NHSTooltip } from "./tooltip/NHSTooltip";
 export { SubNavigation } from "./sub-navigation/SubNavigation";
 
 // Prop types (for consumers who need to type wrapper components)
+export type { NHSHeaderProps, DataFreshnessConfig } from "./header/NHSHeader";
+export type { NHSSideNavProps, NavItem } from "./side-nav/NHSSideNav";
+export type { NHSFiltersProps, FilterField, FilterOption } from "./filters/NHSFilters";
+export type { NHSSPCChartProps, SPCDataPoint, SPCChartType, SPCVariation, SPCLimitOverride } from "./spc-chart/NHSSPCChart";
 export type { ChartContainerProps } from "./chart-container/ChartContainer";
 export type { NHSBarChartProps, ReferenceLineConfig } from "./bar-chart/NHSBarChart";
 export type { NHSLineChartProps } from "./line-chart/NHSLineChart";
