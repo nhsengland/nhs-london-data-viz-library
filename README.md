@@ -1,8 +1,15 @@
 # NHS London Data Visualization Component Library
 
 [![npm version](https://img.shields.io/npm/v/nhs-london-data-viz-library.svg)](https://www.npmjs.com/package/nhs-london-data-viz-library)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 A production-ready React component library for NHS-branded data visualization. Built following **NHS England Data Viz Community of Practice** guidelines with full TypeScript support.
+
+## 🌐 Live Demo
+
+**[london-react-template.developersandbox.federateddataplatform.nhs.uk](https://london-react-template.developersandbox.federateddataplatform.nhs.uk)**
+
+> ℹ️ The demo site is hosted on the NHS Federated Data Platform (FDP). You will need FDP access to view it.
 
 ## 📦 Installation
 
@@ -59,9 +66,9 @@ function App() {
       <NHSBarChart
         data={data}
         xKey="region"
-        yKey="attendances"
+        yKeys={["attendances"]}
         title="A&E Attendances by Sub-Region (Q4 2025/26)"
-        horizontal
+        layout="horizontal"
       />
     </div>
   );
@@ -102,6 +109,21 @@ function App() {
 | `NHSErrorCard` | States — error display when data fails to load |
 | `NHSTooltip` | Interaction — styled chart tooltip |
 
+### Type Exports
+
+All prop interfaces are exported for consumers building wrapper components:
+
+```tsx
+import type {
+  NHSBarChartProps,
+  NHSKPICardProps,
+  NHSTableProps,
+  ColumnDef,
+  SeriesConfig,
+  GanttTask,
+} from "nhs-london-data-viz-library";
+```
+
 ### Theme & Utilities
 
 ```tsx
@@ -139,7 +161,7 @@ nhsColors.nhsPaleGrey   // #E8EDEE
 nhsColors.nhsWhite      // #FFFFFF
 ```
 
-## 🏗️ Using with Palantir Foundry OSDK React Apps
+## 🏥 Using with Palantir Foundry OSDK React Apps
 
 This library works **out of the box** with the default Foundry OSDK React template. No special Vite configuration is needed.
 
@@ -160,7 +182,7 @@ Then import and use components as shown in the Quick Start above.
 ### Setup
 
 ```bash
-git clone git@github.com:YOUR_ORG/nhs-london-data-viz-library.git
+git clone git@github.com:nhsengland/nhs-london-data-viz-library.git
 cd nhs-london-data-viz-library
 npm install
 ```
@@ -178,8 +200,10 @@ Produces:
 ### Run tests
 
 ```bash
-npm test
+npm run test
 ```
+
+44 tests across 9 suites covering rendering, props, interactions, and accessibility.
 
 ### Lint
 
@@ -187,11 +211,56 @@ npm test
 npm run lint
 ```
 
+### Project structure
+
+```
+src/nhs-viz/
+├── index.ts                  ← Library entry point & type exports
+├── theme.ts                  ← NHS colours, typography, chart defaults
+├── bar-chart/
+│   ├── NHSBarChart.tsx
+│   └── NHSBarChart.test.tsx
+├── kpi-card/
+│   ├── NHSKPICard.tsx
+│   └── NHSKPICard.test.tsx
+├── table/
+│   ├── NHSTable.tsx
+│   └── NHSTable.test.tsx
+├── sub-navigation/
+│   ├── SubNavigation.tsx
+│   ├── SubNavigation.test.tsx
+│   └── sub-navigation.css
+├── ... (14 more component folders)
+```
+
 ### Publishing a new version
 
-1. Update components and test locally
-2. Create a GitHub Release with a semantic version tag (e.g., `0.3.0`)
-3. GitHub Actions will automatically build and publish to npmjs.com
+1. Update components and ensure tests pass
+2. Push changes to `main`
+3. Create a GitHub Release with a semantic version tag (e.g., `1.1.0`)
+4. GitHub Actions automatically builds, tests, and publishes to npmjs.com
+
+## 📁 What's Published to npm
+
+> ℹ️ The `dist-lib/` folder is **not committed to the repository**. It is generated during the GitHub Actions CI workflow (`npm run build:lib`) and included in the npm package automatically.
+
+```
+nhs-london-data-viz-library/
+├── dist-lib/                         ← Generated at build time by CI
+│   ├── index.js              ← ESM bundle (all components)
+│   └── types/                ← TypeScript declarations
+│       ├── index.d.ts
+│       ├── theme.d.ts
+│       ├── bar-chart/
+│       ├── kpi-card/
+│       ├── table/
+│       └── ... (all component types)
+├── src/nhs-viz/sub-navigation/
+│   └── sub-navigation.css    ← Optional SubNavigation styles
+├── package.json
+├── README.md
+└── LICENSE
+```
 
 ## 📋 Design Principles
 
@@ -207,25 +276,6 @@ Built following the [NHS England Data Viz Community of Practice](https://nhsengl
 - ✅ Tree-shakeable — import only what you use
 - ✅ TypeScript-first — full type definitions included
 
-## 📁 What's Published to npm
-
-```
-nhs-london-data-viz-library/
-├── dist-lib/
-│   ├── index.js              ← ESM bundle (all components)
-│   └── types/                ← TypeScript declarations
-│       ├── nhs-viz/
-│       │   ├── index.d.ts
-│       │   ├── NHSBarChart.d.ts
-│       │   ├── ...
-│       │   └── theme.d.ts
-│       └── components/
-│           └── SubNavigation.d.ts
-├── src/
-│   └── sub-navigation.css    ← Optional SubNavigation styles
-└── package.json
-```
-
 ## 📄 License
 
 MIT
@@ -234,9 +284,3 @@ MIT
 
 **NHS London Data Team**
 📧 england.london.info-out_of_hospital@nhs.net
-
----
-
-## GitHub Actions Workflow
-
-This repo includes a `.github/workflows/publish.yml` that automatically publishes to npm on each GitHub Release. See the workflow file for details.
